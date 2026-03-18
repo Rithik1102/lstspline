@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: lstspline
+Version: 0.1.0
+Summary: Python wrapper for C++ numerical algorithms using CFFI
+Author: Rithik Nair
+Requires-Dist: numpy
+Requires-Dist: cffi

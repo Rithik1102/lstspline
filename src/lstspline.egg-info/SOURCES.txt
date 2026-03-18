@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+src/lstspline/__init__.py
+src/lstspline/wrapper.py
+src/lstspline.egg-info/PKG-INFO
+src/lstspline.egg-info/SOURCES.txt
+src/lstspline.egg-info/dependency_links.txt
+src/lstspline.egg-info/requires.txt
+src/lstspline.egg-info/top_level.txt
+tests/test_basic.py

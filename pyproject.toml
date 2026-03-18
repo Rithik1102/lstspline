@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lstspline"
+version = "0.1.0"
+description = "Python wrapper for C++ numerical algorithms using CFFI"
+authors = [{name = "Rithik Nair"}]
+dependencies = ["numpy", "cffi"]
