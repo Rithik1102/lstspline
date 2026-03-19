@@ -1,13 +1,13 @@
 import sys
-import os
+from pathlib import Path
 
-# Add src to path
-sys.path.append(os.path.abspath("src"))
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+SRC_PATH = PROJECT_ROOT / "src"
+sys.path.insert(0, str(SRC_PATH))
 
 from lstspline import MyArray
 
 arr = MyArray([1, 2, 3, 4])
 
-print("Array values:")
-for i in range(4):
-    print(f"Index {i}:", arr.get(i))
+print("Value at 1:", arr.get(1))
+print("sum:", arr.sum())

@@ -1,36 +1,57 @@
-from cffi import FFI
 import numpy as np
-import os
+from pathlib import Path
+import importlib.util
+import sys
 
-ffi = FFI()
 
-ffi.cdef("""
-    void* create_array(double* arr, int n);
-    double get_value(void* obj, int i);
-    void delete_array(void* obj);
-""")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+BUILT_DIR = PROJECT_ROOT / "lstspline"
 
-# Detect OS and load correct library
-if os.name == "nt":
-    lib_name = "myarray.dll"
-else:
-    lib_name = "libmyarray.so"
+matches = list(BUILT_DIR.glob("_cffi*.pyd")) + list(BUILT_DIR.glob("_cffi*.so"))
+if not matches:
+    raise ModuleNotFoundError(
+        "Could not find built CFFI module in the default location. Run 'python build.py' first."
+    )
 
-lib_path = os.path.abspath(lib_name)
-lib = ffi.dlopen(lib_path)
+_cffi_path = matches[0]
+
+spec = importlib.util.spec_from_file_location("lstspline_built._cffi", _cffi_path)
+if spec is None or spec.loader is None:
+    raise ImportError(f"Could not load CFFI module from {_cffi_path}")
+
+_cffi = importlib.util.module_from_spec(spec)
+sys.modules["lstspline_built._cffi"] = _cffi
+spec.loader.exec_module(_cffi)
+
+ffi = _cffi.ffi
+lib = _cffi.lib
+
+
+def convert_py_float_to_cffi(x):
+    if x is not None:
+        if isinstance(x, np.ndarray) and x.flags.c_contiguous and x.dtype == np.float64:
+            px = x
+        else:
+            px = np.ascontiguousarray(x, dtype="float64")
+        pxcffi = ffi.cast("double *", px.ctypes.data)
+    else:
+        px = np.array([0.0], dtype="float64")
+        pxcffi = ffi.cast("double *", 0)
+    return px, pxcffi
 
 
 class MyArray:
     def __init__(self, arr):
-        arr = np.array(arr, dtype='float64')
-        self.n = len(arr)
-
-        self.c_arr = ffi.cast("double*", arr.ctypes.data)
-        self.obj = lib.create_array(self.c_arr, self.n)
+        self.arr, c_ptr = convert_py_float_to_cffi(arr)
+        self.n = len(self.arr)
+        self.id = lib.create_array(c_ptr, self.n)
 
     def get(self, i):
-        return lib.get_value(self.obj, i)
+        return lib.get_value(self.id, i)
+
+    def sum(self):
+        return lib.sum_array(self.id)
 
     def __del__(self):
-        if hasattr(self, "obj"):
-            lib.delete_array(self.obj)
+        if hasattr(self, "id"):
+            lib.delete_array(self.id)
