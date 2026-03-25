@@ -576,28 +576,42 @@ static void (*_cffi_call_python_org)(struct _cffi_externpy_s *, char *);
         double get_value(int id, int i);
         double sum_array(int id);
         void delete_array(int id);
+
+        int spline_create(double* x, double* y, int n, int type, double tau);
+        double spline_value(int id, double t);
+        void spline_delete(int id);
     }
     
 
 /************************************************************/
 
 static void *_cffi_types[] = {
-/*  0 */ _CFFI_OP(_CFFI_OP_FUNCTION, 14), // double()(int)
+/*  0 */ _CFFI_OP(_CFFI_OP_FUNCTION, 5), // double()(int)
 /*  1 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7), // int
 /*  2 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/*  3 */ _CFFI_OP(_CFFI_OP_FUNCTION, 14), // double()(int, int)
+/*  3 */ _CFFI_OP(_CFFI_OP_FUNCTION, 5), // double()(int, double)
 /*  4 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/*  5 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/*  5 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 14), // double
 /*  6 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/*  7 */ _CFFI_OP(_CFFI_OP_FUNCTION, 1), // int()(double *, int)
-/*  8 */ _CFFI_OP(_CFFI_OP_POINTER, 14), // double *
+/*  7 */ _CFFI_OP(_CFFI_OP_FUNCTION, 5), // double()(int, int)
+/*  8 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
 /*  9 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
 /* 10 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/* 11 */ _CFFI_OP(_CFFI_OP_FUNCTION, 15), // void()(int)
-/* 12 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
-/* 13 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
-/* 14 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 14), // double
-/* 15 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 0), // void
+/* 11 */ _CFFI_OP(_CFFI_OP_FUNCTION, 1), // int()(double *, double *, int, int, double)
+/* 12 */ _CFFI_OP(_CFFI_OP_POINTER, 5), // double *
+/* 13 */ _CFFI_OP(_CFFI_OP_NOOP, 12),
+/* 14 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 15 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 16 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 14),
+/* 17 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
+/* 18 */ _CFFI_OP(_CFFI_OP_FUNCTION, 1), // int()(double *, int)
+/* 19 */ _CFFI_OP(_CFFI_OP_NOOP, 12),
+/* 20 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 21 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
+/* 22 */ _CFFI_OP(_CFFI_OP_FUNCTION, 25), // void()(int)
+/* 23 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 7),
+/* 24 */ _CFFI_OP(_CFFI_OP_FUNCTION_END, 0),
+/* 25 */ _CFFI_OP(_CFFI_OP_PRIMITIVE, 0), // void
 };
 
 static int _cffi_d_create_array(double * x0, int x1)
@@ -621,10 +635,10 @@ _cffi_f_create_array(PyObject *self, PyObject *args)
     return NULL;
 
   datasize = _cffi_prepare_pointer_call_argument(
-      _cffi_type(8), arg0, (char **)&x0);
+      _cffi_type(12), arg0, (char **)&x0);
   if (datasize != 0) {
     x0 = ((size_t)datasize) <= 640 ? (double *)alloca((size_t)datasize) : NULL;
-    if (_cffi_convert_array_argument(_cffi_type(8), arg0, (char **)&x0,
+    if (_cffi_convert_array_argument(_cffi_type(12), arg0, (char **)&x0,
             datasize, &large_args_free) < 0)
       return NULL;
   }
@@ -716,6 +730,145 @@ _cffi_f_get_value(PyObject *self, PyObject *args)
 #  define _cffi_f_get_value _cffi_d_get_value
 #endif
 
+static int _cffi_d_spline_create(double * x0, double * x1, int x2, int x3, double x4)
+{
+  return spline_create(x0, x1, x2, x3, x4);
+}
+#ifndef PYPY_VERSION
+static PyObject *
+_cffi_f_spline_create(PyObject *self, PyObject *args)
+{
+  double * x0;
+  double * x1;
+  int x2;
+  int x3;
+  double x4;
+  Py_ssize_t datasize;
+  struct _cffi_freeme_s *large_args_free = NULL;
+  int result;
+  PyObject *pyresult;
+  PyObject *arg0;
+  PyObject *arg1;
+  PyObject *arg2;
+  PyObject *arg3;
+  PyObject *arg4;
+
+  if (!PyArg_UnpackTuple(args, "spline_create", 5, 5, &arg0, &arg1, &arg2, &arg3, &arg4))
+    return NULL;
+
+  datasize = _cffi_prepare_pointer_call_argument(
+      _cffi_type(12), arg0, (char **)&x0);
+  if (datasize != 0) {
+    x0 = ((size_t)datasize) <= 640 ? (double *)alloca((size_t)datasize) : NULL;
+    if (_cffi_convert_array_argument(_cffi_type(12), arg0, (char **)&x0,
+            datasize, &large_args_free) < 0)
+      return NULL;
+  }
+
+  datasize = _cffi_prepare_pointer_call_argument(
+      _cffi_type(12), arg1, (char **)&x1);
+  if (datasize != 0) {
+    x1 = ((size_t)datasize) <= 640 ? (double *)alloca((size_t)datasize) : NULL;
+    if (_cffi_convert_array_argument(_cffi_type(12), arg1, (char **)&x1,
+            datasize, &large_args_free) < 0)
+      return NULL;
+  }
+
+  x2 = _cffi_to_c_int(arg2, int);
+  if (x2 == (int)-1 && PyErr_Occurred())
+    return NULL;
+
+  x3 = _cffi_to_c_int(arg3, int);
+  if (x3 == (int)-1 && PyErr_Occurred())
+    return NULL;
+
+  x4 = (double)_cffi_to_c_double(arg4);
+  if (x4 == (double)-1 && PyErr_Occurred())
+    return NULL;
+
+  Py_BEGIN_ALLOW_THREADS
+  _cffi_restore_errno();
+  { result = spline_create(x0, x1, x2, x3, x4); }
+  _cffi_save_errno();
+  Py_END_ALLOW_THREADS
+
+  (void)self; /* unused */
+  pyresult = _cffi_from_c_int(result, int);
+  if (large_args_free != NULL) _cffi_free_array_arguments(large_args_free);
+  return pyresult;
+}
+#else
+#  define _cffi_f_spline_create _cffi_d_spline_create
+#endif
+
+static void _cffi_d_spline_delete(int x0)
+{
+  spline_delete(x0);
+}
+#ifndef PYPY_VERSION
+static PyObject *
+_cffi_f_spline_delete(PyObject *self, PyObject *arg0)
+{
+  int x0;
+
+  x0 = _cffi_to_c_int(arg0, int);
+  if (x0 == (int)-1 && PyErr_Occurred())
+    return NULL;
+
+  Py_BEGIN_ALLOW_THREADS
+  _cffi_restore_errno();
+  { spline_delete(x0); }
+  _cffi_save_errno();
+  Py_END_ALLOW_THREADS
+
+  (void)self; /* unused */
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+#else
+#  define _cffi_f_spline_delete _cffi_d_spline_delete
+#endif
+
+static double _cffi_d_spline_value(int x0, double x1)
+{
+  return spline_value(x0, x1);
+}
+#ifndef PYPY_VERSION
+static PyObject *
+_cffi_f_spline_value(PyObject *self, PyObject *args)
+{
+  int x0;
+  double x1;
+  double result;
+  PyObject *pyresult;
+  PyObject *arg0;
+  PyObject *arg1;
+
+  if (!PyArg_UnpackTuple(args, "spline_value", 2, 2, &arg0, &arg1))
+    return NULL;
+
+  x0 = _cffi_to_c_int(arg0, int);
+  if (x0 == (int)-1 && PyErr_Occurred())
+    return NULL;
+
+  x1 = (double)_cffi_to_c_double(arg1);
+  if (x1 == (double)-1 && PyErr_Occurred())
+    return NULL;
+
+  Py_BEGIN_ALLOW_THREADS
+  _cffi_restore_errno();
+  { result = spline_value(x0, x1); }
+  _cffi_save_errno();
+  Py_END_ALLOW_THREADS
+
+  (void)self; /* unused */
+  pyresult = _cffi_from_c_double(result);
+  return pyresult;
+}
+#else
+#  define _cffi_f_spline_value _cffi_d_spline_value
+#endif
+
 static double _cffi_d_sum_array(int x0)
 {
   return sum_array(x0);
@@ -747,9 +900,12 @@ _cffi_f_sum_array(PyObject *self, PyObject *arg0)
 #endif
 
 static const struct _cffi_global_s _cffi_globals[] = {
-  { "create_array", (void *)_cffi_f_create_array, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 7), (void *)_cffi_d_create_array },
-  { "delete_array", (void *)_cffi_f_delete_array, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_O, 11), (void *)_cffi_d_delete_array },
-  { "get_value", (void *)_cffi_f_get_value, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 3), (void *)_cffi_d_get_value },
+  { "create_array", (void *)_cffi_f_create_array, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 18), (void *)_cffi_d_create_array },
+  { "delete_array", (void *)_cffi_f_delete_array, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_O, 22), (void *)_cffi_d_delete_array },
+  { "get_value", (void *)_cffi_f_get_value, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 7), (void *)_cffi_d_get_value },
+  { "spline_create", (void *)_cffi_f_spline_create, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 11), (void *)_cffi_d_spline_create },
+  { "spline_delete", (void *)_cffi_f_spline_delete, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_O, 22), (void *)_cffi_d_spline_delete },
+  { "spline_value", (void *)_cffi_f_spline_value, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_V, 3), (void *)_cffi_d_spline_value },
   { "sum_array", (void *)_cffi_f_sum_array, _CFFI_OP(_CFFI_OP_CPYTHON_BLTN_O, 0), (void *)_cffi_d_sum_array },
 };
 
@@ -760,12 +916,12 @@ static const struct _cffi_type_context_s _cffi_type_context = {
   NULL,  /* no struct_unions */
   NULL,  /* no enums */
   NULL,  /* no typenames */
-  4,  /* num_globals */
+  7,  /* num_globals */
   0,  /* num_struct_unions */
   0,  /* num_enums */
   0,  /* num_typenames */
   NULL,  /* no includes */
-  16,  /* num_types */
+  26,  /* num_types */
   0,  /* flags */
 };
 

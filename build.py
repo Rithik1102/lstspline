@@ -11,6 +11,10 @@ ffibuilder.cdef("""
     double get_value(int id, int i);
     double sum_array(int id);
     void delete_array(int id);
+    
+    int spline_create(double* x, double* y, int n, int type, double tau);
+    double spline_value(int id, double t);
+    void spline_delete(int id);
 """)
 
 ffibuilder.set_source(
@@ -21,9 +25,15 @@ ffibuilder.set_source(
         double get_value(int id, int i);
         double sum_array(int id);
         void delete_array(int id);
+
+        int spline_create(double* x, double* y, int n, int type, double tau);
+        double spline_value(int id, double t);
+        void spline_delete(int id);
     }
     """,
-    sources=[str(WRAPPER_CPP)],
+    sources=[str(ROOT / "c_src" / "wrapper.cpp"),
+             str(ROOT / "c_src" / "spline_wrapper.cpp"),
+             str(ROOT / "c_src" / "cubicsp.cpp")],
     source_extension=".cpp",
     extra_compile_args=["/std:c++17"],
 )
@@ -31,6 +41,6 @@ ffibuilder.set_source(
 if __name__ == "__main__":
     ffibuilder.compile(
         verbose=True,
-        tmpdir="build",
-        target="src/lstspline/_cffi.*"
+        #tmpdir="build",
+        #target="src/lstspline/_cffi.*"
     )

@@ -55,3 +55,20 @@ class MyArray:
     def __del__(self):
         if hasattr(self, "id"):
             lib.delete_array(self.id)
+
+
+class CubicSpline:
+    def __init__(self, x, y, type=1, tau=0.0):
+        self.x, x_ptr = convert_py_float_to_cffi(x)
+        self.y, y_ptr = convert_py_float_to_cffi(y)
+
+        self.n = len(self.x)
+
+        self.id = lib.spline_create(x_ptr, y_ptr, self.n, type, tau)
+
+    def value(self, t):
+        return lib.spline_value(self.id, t)
+
+    def __del__(self):
+        if hasattr(self, "id"):
+            lib.spline_delete(self.id)
