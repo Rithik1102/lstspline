@@ -1,38 +1,91 @@
 # lstspline
 
-Python interface for C++ numerical algorithms using CFFI.
+Python package for numerical spline algorithms using C++ with CFFI.
 
-This project demonstrates how to safely integrate Python with C++ by using a C wrapper and handler-based memory management.
+This project demonstrates how to integrate Python with C++ for efficient
+numerical computation, with a focus on cubic spline interpolation.
 
----
+------------------------------------------------------------------------
 
 ## Architecture
 
 Python → CFFI → C wrapper → C++ classes
 
-- Python provides user-facing API
-- CFFI bridges Python and C
-- C wrapper exposes C++ functionality
-- C++ manages objects and performs computations
+-   Python provides user-facing API\
+-   CFFI bridges Python and C\
+-   C wrapper manages C++ objects via integer handlers\
+-   C++ implements spline algorithms
 
----
+------------------------------------------------------------------------
 
 ## Features
 
-- Pass NumPy arrays to C++ (float64, contiguous memory)
-- Safe conversion using `np.ascontiguousarray`
-- Handler-based memory management (no raw pointers)
-- Multiple methods exposed from C++:
-  - `get(i)` → access element
-  - `sum()` → compute sum of array
+### Toy Example
 
----
+-   `MyArray` class for demonstrating:
+    -   Passing NumPy arrays to C++
+    -   Accessing stored data
+    -   Performing computations (`get`, `sum`)
+
+### Cubic Spline (Core Implementation)
+
+-   Dynamic memory using `std::vector<double>`
+-   Removed fixed-size array limitations (`MAXKNOTS`)
+-   Build spline from input data
+-   Evaluate spline at arbitrary points
+
+------------------------------------------------------------------------
+
+## Project Structure
+
+    lstspline/
+    ├── c_src/
+    │   ├── cubicsp.cpp
+    │   ├── cubicsp.h
+    │   ├── wrapper.cpp
+    │   ├── spline_wrapper.cpp
+    ├── src/lstspline/
+    │   ├── __init__.py
+    │   ├── wrapper.py
+    │   ├── spline_wrapper.py
+    ├── tests/
+    │   └── test_basic.py
+    ├── build.py
+
+------------------------------------------------------------------------
 
 ## Build
 
-Compile the C++ extension using CFFI:
+    python build.py
 
-```bash
-python build.py
+------------------------------------------------------------------------
+## Test
+   
+   python tests/test_basic.py  (For toy example)
+   python tests/testcs.py      (For cubic spline implementation)
 
-python tests/test_basic.py
+------------------------------------------------------------------------
+
+## Usage
+
+``` python
+from lstspline import CubicSpline
+
+x = [0,1,2,3,4,5]
+y = [0,0.1,0.2,0.3,0.4,0.5]
+
+s = CubicSpline(x, y)
+print(s.value(2.5))   # ~0.25
+```
+
+------------------------------------------------------------------------
+
+## Notes
+
+-   Input arrays are converted to contiguous `float64`
+-   C++ objects are managed using integer handlers
+-   Supports interpolation between points
+
+------------------------------------------------------------------------
+
+
