@@ -63,7 +63,7 @@ Python → CFFI → C wrapper → C++ classes
    
    python tests/test_basic.py  (For toy example)
    python tests/testcs.py      (For cubic spline implementation)
-
+   python tests/test_tensor_spline.py (For Multivariate (Tensor) Spline implementation)
 ------------------------------------------------------------------------
 
 ## Usage
@@ -88,4 +88,33 @@ print(s.value(2.5))   # ~0.25
 
 ------------------------------------------------------------------------
 
+## Multivariate (Tensor) Spline
 
+The package also supports multivariate tensor-product splines.
+
+### Example
+
+```python
+from lstspline import TensorSpline
+
+knots = [
+    [0.0, 0.5, 1.0],
+    [0.0, 0.5, 1.0],
+]
+
+data = [
+    [0.2, 0.3, 0.06],
+    [0.7, 0.4, 0.28],
+    [0.5, 0.5, 0.25],
+    [0.9, 0.8, 0.72],
+]
+
+exactdata = [
+    [0.0, 0.0, 0.0],
+    [1.0, 1.0, 1.0],
+]
+
+s = TensorSpline(kind=0, dim=2, knots=knots, data=data, exactdata=exactdata)
+
+print(s.value([0.5, 0.5]))
+print(s.value_der([0.5, 0.5], 0))

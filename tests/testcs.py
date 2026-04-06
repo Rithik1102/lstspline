@@ -10,9 +10,6 @@ from lstspline import CubicSpline
 x = [0,1,2,3,4,5]
 y = [0,0.1,0.2,0.3,0.4,0.5]
 
-#x = [0,1,2,3]
-#y = [0,1,0,1]
-
-s = CubicSpline(x, y)
-
-print(s.value(2.5))
+for t in [0, 1, 2, 3]:
+    s = CubicSpline(x, y, type=t)
+    print(f"type {t} →", s.value(2.5))
