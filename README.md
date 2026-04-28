@@ -119,7 +119,9 @@ s = TensorSpline(kind=0, dim=2, knots=knots, data=data, exactdata=exactdata)
 print(s.value([0.5, 0.5]))
 print(s.value_der([0.5, 0.5], 0))
 
+```
 ------------------------------------------------------------------------
+
 ## Plotting
 
 The project includes scripts to generate 2D and 3D spline visualisations.
@@ -127,7 +129,9 @@ The project includes scripts to generate 2D and 3D spline visualisations.
 Run these commands from the project root.
 
 2D Spline Plots
+```python
 python plots/plot_2d_comparison.py
+```
 
 This generates:
 
@@ -137,7 +141,9 @@ plots/safe_2d_non-monotone_curved_data.png
 These plots compare cubic and monotone spline behaviour on monotone and non-monotone datasets.
 
 3D Tensor Spline Plots
+```python
 python plots/plot_3d_tensor_spline.py
+```
 
 This generates:
 
