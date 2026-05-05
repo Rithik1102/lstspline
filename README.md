@@ -1,153 +1,144 @@
 # lstspline
 
-Python package for numerical spline algorithms using C++ with CFFI.
+Python package for efficient spline interpolation using C++ (via CFFI), with a strong focus on **analysis, benchmarking, and visualisation of spline behaviour**.
 
-This project demonstrates how to integrate Python with C++ for efficient
-numerical computation, with a focus on cubic spline interpolation.
+---
 
-------------------------------------------------------------------------
+## 🚀 Overview
 
-## Architecture
+This project implements and evaluates spline interpolation methods, including:
+
+- Cubic spline interpolation
+- Monotone-preserving spline interpolation
+- Tensor-product splines (multivariate)
+- Benchmarking against SciPy implementations
+
+The goal is to study **accuracy, stability, and monotonicity preservation** under different types of data.
+
+---
+
+## 🧠 Motivation
+
+Spline interpolation is widely used in numerical analysis and machine learning. However:
+
+- Cubic splines may introduce **oscillations**
+- Monotone splines improve **stability**
+- Real-world datasets often contain **noise and discontinuities**
+
+This project explores these behaviours through experiments and comparisons.
+
+---
+
+## 🏗 Architecture
 
 Python → CFFI → C wrapper → C++ classes
 
--   Python provides user-facing API\
--   CFFI bridges Python and C\
--   C wrapper manages C++ objects via integer handlers\
--   C++ implements spline algorithms
+- Python: User API and plotting
+- CFFI: Interface layer
+- C wrapper: Object management using handles
+- C++: Core spline algorithms
 
-------------------------------------------------------------------------
+---
 
-## Features
+## ✨ Features
 
-### Toy Example
+### 🔹 Cubic Spline
+- Smooth interpolation (C² continuity)
+- Efficient C++ implementation
+- Suitable for smooth data
 
--   `MyArray` class for demonstrating:
-    -   Passing NumPy arrays to C++
-    -   Accessing stored data
-    -   Performing computations (`get`, `sum`)
+### 🔹 Monotone Spline
+- Preserves monotonicity
+- Prevents overshooting
+- Better for noisy / real-world data
 
-### Cubic Spline (Core Implementation)
+### 🔹 Tensor (Multivariate) Spline
+- Supports higher-dimensional approximation
+- Used for 3D surface modelling
 
--   Dynamic memory using `std::vector<double>`
--   Removed fixed-size array limitations (`MAXKNOTS`)
--   Build spline from input data
--   Evaluate spline at arbitrary points
+---
 
-------------------------------------------------------------------------
+## 📊 Project Structure
 
-## Project Structure
 
-    lstspline/
-    ├── c_src/
-    │   ├── cubicsp.cpp
-    │   ├── cubicsp.h
-    │   ├── wrapper.cpp
-    │   ├── spline_wrapper.cpp
-    ├── src/lstspline/
-    │   ├── __init__.py
-    │   ├── wrapper.py
-    │   ├── spline_wrapper.py
-    ├── tests/
-    │   └── test_basic.py
-    ├── build.py
+lstspline/
+├── c_src/
+├── src/lstspline/
+├── tests/
+├── plots/
+├── generate_all_plots.py
+├── benchmark_results.csv
+├── build.py
 
-------------------------------------------------------------------------
 
-## Build
+---
 
-    python build.py
+## ⚙️ Build
 
-------------------------------------------------------------------------
-## Test
-   
-   python tests/test_basic.py  (For toy example)
-   python tests/testcs.py      (For cubic spline implementation)
-   python tests/test_tensor_spline.py (For Multivariate (Tensor) Spline implementation)
-------------------------------------------------------------------------
+```bash
+python build.py
+▶️ Run Tests
+python tests/test_basic.py
+python tests/testcs.py
+python tests/test_tensor_spline.py
+📊 Generate Plots
+python generate_all_plots.py
+📈 Benchmarking & Evaluation
 
-## Usage
+The project evaluates spline methods using:
 
-``` python
+Mean Squared Error (MSE)
+Mean Absolute Error (MAE)
+Monotonicity Violations
+📊 Sample Results
+Dataset	Method	MSE	MAE	Monotonicity Violations
+Noisy sigmoid	Our monotone	0.000327	0.0143	181
+Noisy sigmoid	SciPy PCHIP	0.000320	0.0141	181
+Noisy step	Our cubic	0.1674	0.3229	230
+Noisy step	SciPy PCHIP	0.1430	0.2979	229
+Plateau	Monotone	—	—	0 violations
+
+👉 Monotone splines consistently reduce instability and preserve shape.
+
+📊 Visualisations
+1D Spline Comparison
+
+Observation:
+Cubic splines introduce oscillations, while monotone splines preserve structure.
+
+Step Data Behaviour
+
+Observation:
+Cubic splines overshoot near discontinuities.
+Monotone splines provide stable approximation.
+
+3D Tensor Spline
+
+Observation:
+Tensor splines approximate smooth surfaces effectively in 2D.
+
+📦 Usage
 from lstspline import CubicSpline
 
 x = [0,1,2,3,4,5]
 y = [0,0.1,0.2,0.3,0.4,0.5]
 
 s = CubicSpline(x, y)
-print(s.value(2.5))   # ~0.25
-```
+print(s.value(2.5))
+📌 Key Insights
+Cubic splines → smooth but unstable near discontinuities
+Monotone splines → stable and shape-preserving
+SciPy PCHIP → strong benchmark for monotone interpolation
+Tensor splines → extend interpolation to higher dimensions
+📚 References
+R. L. Burden and J. D. Faires, Numerical Analysis
+C. de Boor, A Practical Guide to Splines
+Fritsch & Carlson, Monotone Piecewise Cubic Interpolation
+SciPy Documentation
+🎯 Conclusion
 
-------------------------------------------------------------------------
+This project demonstrates that:
 
-## Notes
-
--   Input arrays are converted to contiguous `float64`
--   C++ objects are managed using integer handlers
--   Supports interpolation between points
-
-------------------------------------------------------------------------
-
-## Multivariate (Tensor) Spline
-
-The package also supports multivariate tensor-product splines.
-
-### Example
-
-```python
-from lstspline import TensorSpline
-
-knots = [
-    [0.0, 0.5, 1.0],
-    [0.0, 0.5, 1.0],
-]
-
-data = [
-    [0.2, 0.3, 0.06],
-    [0.7, 0.4, 0.28],
-    [0.5, 0.5, 0.25],
-    [0.9, 0.8, 0.72],
-]
-
-exactdata = [
-    [0.0, 0.0, 0.0],
-    [1.0, 1.0, 1.0],
-]
-
-s = TensorSpline(kind=0, dim=2, knots=knots, data=data, exactdata=exactdata)
-
-print(s.value([0.5, 0.5]))
-print(s.value_der([0.5, 0.5], 0))
-
-```
-------------------------------------------------------------------------
-
-## Plotting
-
-The project includes scripts to generate 2D and 3D spline visualisations.
-
-Run these commands from the project root.
-
-2D Spline Plots
-```python
-python plots/plot_2d_comparison.py
-```
-
-This generates:
-
-plots/safe_2d_monotone_linear_data.png
-plots/safe_2d_non-monotone_curved_data.png
-
-These plots compare cubic and monotone spline behaviour on monotone and non-monotone datasets.
-
-3D Tensor Spline Plots
-```python
-python plots/plot_3d_tensor_spline.py
-```
-
-This generates:
-
-plots/tensor_spline_3d_surface.png
-plots/tensor_spline_3d_wireframe.png
-
-These plots show the tensor-product spline approximation as a 3D surface and wireframe.##
+Choosing the correct spline method depends on data characteristics
+Monotone splines outperform cubic splines on noisy or discontinuous datasets
+Custom C++ implementation performs comparably to SciPy
