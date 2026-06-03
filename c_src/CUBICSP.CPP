@@ -52,6 +52,8 @@ int		cubic_spline::BuildSpline(Float_ *x, Float_ *y, int N, int type, Float_ tau
     h.assign(work_size, 0.0);
     u.assign(work_size, 0.0);
     v.assign(work_size, 0.0);
+	uu.assign(work_size, 0.0);
+    vv.assign(work_size, 0.0);
     alpha.assign(work_size, 0.0);
     beta.assign(work_size, 0.0);
     gamma.assign(work_size, 0.0);
@@ -60,7 +62,16 @@ int		cubic_spline::BuildSpline(Float_ *x, Float_ *y, int N, int type, Float_ tau
 
     Taut=(tau>0.01);
     tauI=tau;       
-    NN=N;  
+    
+	const double EPS_TAU = 0.5;
+
+	if (tauI >= EPS_TAU)
+	    Taut = 1;
+    else
+        Taut = 0;
+	
+
+	NN=N;  
     err = 0;
     T = 0;  
 	for(i=0;i<N;i++) {  
@@ -70,7 +81,7 @@ int		cubic_spline::BuildSpline(Float_ *x, Float_ *y, int N, int type, Float_ tau
 //	sort 
 	sortX();
 	if(Taut && N>4) m_type=2;
-	if(N<4) m_type=0;
+	if(N<4 && m_type == 2) m_type=1;
 	switch(m_type) {
 	case 2: TautSpline(u.data(),v.data(),NN); break;
 	case 0:
@@ -182,15 +193,15 @@ void cubic_spline::TautSpline(Float_ *x, Float_ *y, int N)
       beta[i -1]=(tauI* cosh(tauI*h[i -1]) / sinh(tauI*h[i -1]) - 1/h[i -1]);
  	}
  
- 	u[2 -1]=(beta[1 -1]+beta[2 -1]); 
- 	v[2 -1]=gamma[2 -1]-gamma[1 -1];
+ 	uu[2 -1]=(beta[1 -1]+beta[2 -1]); 
+ 	vv[2 -1]=gamma[2 -1]-gamma[1 -1];
  	for (i=3;i<= N-1;i++) {
-       u[i -1]=((beta[i -1]+beta[i-1 -1])- alpha[i-1 -1]*alpha[i-1 -1]/u[i-1 -1]);
-       v[i -1]=(gamma[i -1]-gamma[i-1 -1]  - alpha[i-1 -1] * v[i-1 -1]/u[i-1 -1]);
+       uu[i -1]=((beta[i -1]+beta[i-1 -1])- alpha[i-1 -1]*alpha[i-1 -1]/uu[i-1 -1]);
+       vv[i -1]=(gamma[i -1]-gamma[i-1 -1]  - alpha[i-1 -1] * vv[i-1 -1]/uu[i-1 -1]);
  	}
  	c[N -1]=0;
  	for( i= N-1; i>=2; i--)
-     c[i -1]=((v[i -1]-alpha[i -1]*c[i+1 -1])/u[i -1]);
+     c[i -1]=((vv[i -1]-alpha[i -1]*c[i+1 -1])/uu[i -1]);
  
  	c[1 -1]=0;
 }

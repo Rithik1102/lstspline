@@ -4,7 +4,7 @@ class cubic_spline {
 	public:  
 		int		m_type; // 1 = cubic, 2 = taught, 3 - monotone
 	 	
-		std::vector<Float_> b, c, h, u, v, alpha, beta, gamma;
+		std::vector<Float_> b, c, h, u, v, uu, vv, alpha, beta, gamma;
 
 	 	Float_ tauI; 
 	 	int NN,T;          

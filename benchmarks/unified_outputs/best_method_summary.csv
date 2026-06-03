@@ -1,0 +1,5 @@
+dataset,best_by_mae,best_mae,best_by_rmse,best_rmse,best_by_relative_mae,best_relative_mae,fastest_method,fastest_runtime
+GDP,Our monotone spline,0.0025045979729188,Our monotone spline,0.0051243488102693,Our monotone spline,0.03263903955697846,Smoothing spline,0.0001432999852113
+Housing,SciPy PCHIP,10374.784438415032,SciPy PCHIP,14428.191377486915,SciPy PCHIP,0.14116109046392833,SciPy PCHIP,0.0001228000037372
+Inflation,SciPy PCHIP,0.1006808087294527,SciPy PCHIP,0.156876402816191,SciPy PCHIP,0.0574582688650697,Moving average,0.0
+Population,Our monotone spline,3068.2588542144954,Our monotone spline,5486.259875875394,Isotonic + monotone spline,0.634795176181454,SciPy PCHIP,0.0001371999969705
